@@ -1,0 +1,101 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+# Model Files (too large for git)
+*.bin
+*.safetensors
+*.h5
+*.ckpt
+*.pth
+*.pt
+models/
+pregnancy-assistant-tinyllama/
+*.model
+
+# Large Data Files
+*.csv
+*.json
+*.parquet
+data/*.csv
+data/*.json
+!data/sample_questions.txt
+
+# Training Outputs
+training_logs/
+checkpoints/
+runs/
+outputs/
+results/*.png
+results/*.jpg
+results/*.pdf
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
+.DS_Store
+.directory
+
+# Logs
+*.log
+logs/
+*.out
+
+# Temporary files
+*.tmp
+temp/
+tmp/
+
+# Hugging Face cache
+.cache/
+huggingface/
+
+# Test files
+test/
+tests/__pycache__/
+
+# Environment variables
+.env
+.env.local
+
+# Gradio
+gradio_cached_examples/
+flagged/
