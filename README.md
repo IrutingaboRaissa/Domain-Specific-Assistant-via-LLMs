@@ -211,8 +211,7 @@ Domain-Specific-Assistant-via-LLMs/
 └── LICENSE                             # Legal stuff
 ```
 
-### Where to Start (Student Roadmap):
-
+### Where to Start 
 1. **Start with the Notebook** (`notebook/pregnancy_assistant_Raissa.ipynb`)
    - Complete end-to-end training pipeline
    - Explains every step with code and comments
@@ -247,7 +246,7 @@ Domain-Specific-Assistant-via-LLMs/
 1. **Click the Colab Badge**: Use the "Open in Colab" badge at the top of this README
 ## How to Run
 
-### Option 1: Google Colab (Recommended)
+###  Google Colab 
 
 1. **Open Notebook**: Click the Colab badge above
 2. **GPU Setup**: Runtime → Change runtime type → T4 GPU
@@ -260,27 +259,6 @@ Domain-Specific-Assistant-via-LLMs/
    - Evaluation metrics calculation
    - Streamlit interface deployment
 
-### Option 2: Local Setup
-
-**Requirements**: Python 3.8+, NVIDIA GPU (8GB+ VRAM), 16GB+ RAM
-
-```bash
-git clone https://github.com/YOUR_USERNAME/Domain-Specific-Assistant-via-LLMs.git
-cd Domain-Specific-Assistant-via-LLMs
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-jupyter notebook notebook/pregnancy_assistant_Raissa.ipynb
-streamlit run app.py
-```
-
-### Option 3: Pre-trained Model Demo
-
-```bash
-pip install streamlit transformers peft torch
-streamlit run app.py
-```
-Automatically downloads the fine-tuned model from Hugging Face.
 
 ## Experiments & Results
 
@@ -298,24 +276,12 @@ I tested multiple hyperparameter configurations and measured performance using s
 | Exp 4 | 3e-4 | 16 | 3 | 1.71 | 33.1 | 50.1 | 68 min |
 | Exp 5 | 2e-4 | 32 | 3 | 1.60 | 37.9 | 54.7 | 85 min |
 
-### What We Learned (Student Insights):
+### Insights:
 
 **Finding 1: Learning Rate is Critical**
 - **Too low (1e-4)**: Model learns too slowly, doesn't reach full potential
 - **Just right (2e-4)**: Perfect balance, best performance
 - **Too high (3e-4)**: Model becomes unstable, performance drops
-
-**Finding 2: LoRA Rank Sweet Spot**
-- **Too small (8)**: Not enough capacity to learn pregnancy knowledge
-- **Perfect (16)**: Best performance-to-efficiency ratio
-- **Too large (32)**: Marginal improvement but much slower training
-
-**Finding 3: Epochs and Overfitting**
-- **2 epochs**: Underfitting (model hasn't learned enough)
-- **3 epochs**: Perfect (our choice!)
-- **4+ epochs**: Overfitting (model memorizes instead of learning)
-
-**Student Takeaway**: AI is about finding the right balance, not just "bigger is better"!
 
 ### Detailed Performance Analysis
 
@@ -340,13 +306,7 @@ I tested multiple hyperparameter configurations and measured performance using s
 > "Sushi is generally safe to eat, but make sure it's fresh. Some people might have allergies to fish."
 
 **Our Fine-Tuned Model**:
-> "Raw fish in sushi can contain harmful bacteria like salmonella and parasites that are dangerous during pregnancy. Pregnant women should avoid raw or undercooked fish. However, cooked sushi rolls like California rolls or shrimp tempura rolls are safe options. If you're craving sushi, choose fully cooked options or vegetarian rolls."
-
-**Why Our Model is Better**:
-- Pregnancy-specific safety concerns  
-- Mentions specific risks (bacteria, parasites)  
-- Provides safe alternatives  
-- Clear, actionable advice  
+> "Raw fish in sushi can contain harmful bacteria like salmonella and parasites that are dangerous during pregnancy. Pregnant women should avoid raw or undercooked fish. However, cooked sushi rolls like California rolls or shrimp tempura rolls are safe options. If you're craving sushi, choose fully cooked options or vegetarian rolls." 
 
 #### Nutrition Guidance Example
 
@@ -419,68 +379,6 @@ Symptoms & Health:
 - "When should I call my doctor?"
 - "What are signs of labor?"
 ```
-
-### Demo Video Walkthrough (7-10 Minutes)
-
-**Video Requirements (Assignment Deliverable)**:
-A comprehensive 5-10 minute video showcasing:
-- Fine-tuning process demonstration
-- Model functionality and user interactions  
-- Key insights and comparisons between base and fine-tuned models
-- Clear explanations of training workflow
-
-**Video Link**: [Insert YouTube/Google Drive Link Here]
-
-**Video Content Structure**:
-1. **Project Introduction** (1 minute)
-   - Domain selection rationale (pregnancy healthcare)
-   - Technical approach overview (LoRA fine-tuning)
-
-2. **Dataset & Preprocessing** (2 minutes)  
-   - Show 2,806 pregnancy Q&A samples
-   - Demonstrate data preprocessing pipeline
-   - Quality control and formatting steps
-
-3. **Training Process Live Demo** (3 minutes)
-   - Google Colab notebook walkthrough
-   - LoRA configuration explanation
-   - Real-time training metrics display
-   - GPU memory usage monitoring
-
-4. **Model Evaluation & Comparison** (2 minutes)
-   - Performance metrics analysis (BLEU: 12.3→38.2, ROUGE improvements)
-   - Side-by-side base model vs fine-tuned responses
-   - Domain relevance demonstration
-
-5. **Interactive Demo** (2 minutes)
-   - Live Streamlit interface demonstration
-   - Various pregnancy-related queries
-   - Out-of-domain query handling
-   - Response quality showcase
-
-6. **Key Insights & Conclusions** (1 minute)
-   - Technical learnings from hyperparameter experiments
-   - Impact of domain specialization
-   - Real-world application potential
-
-### Model Performance Comparison
-
-#### Nutrition Query Example
-**Query**: *"Can I eat raw cookie dough while pregnant?"*
-
-| Model State | Response Quality |
-|-------------|------------------|
-| **Base Model** | "Cookie dough contains eggs and flour. Raw eggs might have bacteria. It's probably fine in small amounts." (Generic, vague) |
-| **Fine-tuned** | "Raw cookie dough poses two main risks during pregnancy: 1) Raw eggs can contain salmonella, 2) Raw flour can contain E. coli bacteria. Both infections can be dangerous for you and your baby. Avoid raw cookie dough and opt for safer alternatives like edible cookie dough made with pasteurized eggs and heat-treated flour." (Specific, detailed, safe) |
-
-#### Medical Emergency Example  
-**Query**: *"I'm 35 weeks pregnant and having contractions. When should I go to the hospital?"*
-
-| Model State | Response Quality |
-|-------------|------------------|
-| **Base Model** | "Contractions are normal during pregnancy. You should probably call your doctor if they get stronger or closer together." (Too generic, lacks urgency) |
-| **Fine-tuned** | "At 35 weeks, regular contractions could indicate preterm labor. Go to the hospital immediately if you experience: contractions every 5 minutes or less for an hour, contractions getting stronger and longer, water breaking, heavy bleeding, or severe pain. Call your healthcare provider or go directly to labor and delivery." (Urgent, specific, actionable) |
-
 ## Technical Implementation Details
 
 **Architecture Components**:
@@ -507,83 +405,6 @@ A comprehensive 5-10 minute video showcasing:
    - Hugging Face ecosystem (models, datasets, spaces)
    - Parameter-Efficient Fine-Tuning (PEFT) library
    - Version control with Git/GitHub
-
-### Conceptual Knowledge You'll Master:
-
-1. **Domain Specialization**
-   - Why specialized AI often beats general AI
-   - How to choose appropriate domains for fine-tuning
-   - Balancing specialization with general capability
-
-2. **Efficiency Techniques**
-   - Why LoRA works so well
-   - Memory optimization strategies
-   - Cost-effective ML development
-
-3. **Evaluation & Iteration**
-   - Choosing appropriate metrics for your domain
-   - Hyperparameter tuning methodology
-   - Interpreting and acting on results
-
-4. **AI Safety & Ethics**
-   - Responsible AI in healthcare
-   - Handling out-of-domain queries safely
-   - The importance of medical disclaimers
-
-### Real-World Applications:
-
-After completing this project, you'll understand how to:
-- Build domain-specific AI assistants for education, legal, finance, etc.
-- Fine-tune models cost-effectively using cloud resources
-- Deploy AI applications with user-friendly interfaces
-- Evaluate and improve AI systems systematically
-
-## Student Learning Guide (Step-by-Step Curriculum)
-
-### Beginner Path (New to AI/ML)
-
-**Week 1: Foundation Building**
-- Read this entire README (bookmark it!)
-- Watch intro videos on neural networks (3Blue1Brown YouTube series)
-- Set up Google Colab account
-- Review Python basics (if needed)
-
-## Project Extensions
-
-**Potential Enhancements**:
-- **Multi-language Support**: Extend to Spanish, French pregnancy content
-- **RAG Integration**: Add retrieval-augmented generation for latest medical research
-- **Voice Interface**: Audio input/output for accessibility
-- **Mobile App**: React Native or Flutter deployment
-- **Provider Integration**: Connect with healthcare provider APIs
-
-**Related Applications**:
-- Pediatric health assistant
-- Mental health support chatbot
-- Elderly care advisor
-- Medical terminology translator
-
-3. **Business Domains**:
-   - Legal document analyzer
-   - Financial planning advisor
-   - HR policy assistant
-   - Customer service chatbot
-
-4. **Technical Improvements**:
-   - Voice interface integration
-   - Multi-modal support (text + images)
-   - Real-time learning from user feedback
-   - Integration with electronic health records
-- Response time: ~2-3 seconds per query
-
-**Access**: The interface can be launched locally with `streamlit run app.py` or deployed to Streamlit Community Cloud for public access.
-
-**Launch Command**:
-```bash
-streamlit run app.py
-```
-
-See [STREAMLIT_DEPLOYMENT.md](STREAMLIT_DEPLOYMENT.md) for detailed deployment instructions.
 
 ## Installation & Usage
 
@@ -632,201 +453,6 @@ response = tokenizer.decode(outputs[0], skip_special_tokens=True)
 print(response)
 ```
 
-## Demo Video
-
-**Video Link**: [YouTube/Google Drive Link - 7 Minutes]
-
-**Contents**:
-1. **Introduction** (30s): Project overview and motivation
-2. **Dataset Exploration** (1 min): Show preprocessing and data quality
-3. **Fine-Tuning Process** (2 min): Walk through training setup, LoRA config, live training
-4. **Evaluation** (1.5 min): Present metrics, compare base vs fine-tuned
-5. **Live Demo** (2 min): Interactive demonstration with various queries
-6. **Insights** (30s): Key learnings and future improvements
-
-## Code Quality
-
-- **Well-structured**: Modular design with separate utilities
-- **Documented**: Comprehensive docstrings and inline comments
-- **Type hints**: Used throughout for clarity
-- **Error handling**: Robust exception handling
-- **Best practices**: Follows PEP 8 style guidelines
-- **Reproducible**: Random seeds set for consistent results
-
-## Key Insights & Learnings
-
-## Quick Code Examples
-
-### Use Our Pre-Trained Model (Easiest Way)
-
-```python
-# Install required packages first:
-pip install transformers peft torch
-
-# Simple usage example
-from transformers import AutoModelForCausalLM, AutoTokenizer
-from peft import PeftModel
-
-# Load model and ask questions
-model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
-base_model = AutoModelForCausalLM.from_pretrained(model_name)
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = PeftModel.from_pretrained(base_model, "Irutingabo/pregnancy-assistant-tinyllama")
-
-# Ask a question
-question = "Is it safe to eat sushi during pregnancy?"
-prompt = f"### Instruction:\n{question}\n\n### Response:\n"
-inputs = tokenizer(prompt, return_tensors="pt")
-outputs = model.generate(**inputs, max_length=512)
-response = tokenizer.decode(outputs[0], skip_special_tokens=True)
-print(response.split("### Response:\n")[-1])
-```
-
-### Launch Streamlit App
-
-```bash
-# Install Streamlit  
-pip install streamlit
-
-# Run the existing app
-streamlit run app.py
-```
-
-See `app.py` and `main.py` for complete implementation.
-
-## Troubleshooting Guide (Common Student Issues)
-
-### Problem 1: "CUDA out of memory" Error
-**Solutions:**
-- Reduce batch size from 4 to 2 or 1
-- Use `torch_dtype=torch.float16` for half precision  
-- Enable gradient checkpointing: `model.gradient_checkpointing_enable()`
-- Use Google Colab Pro for more GPU memory
-
-### Problem 2: Missing Libraries
-```bash
-pip install torch transformers peft trl bitsandbytes accelerate streamlit
-```
-
-### Problem 3: Model Loading Issues  
-**Solutions:**
-- Check internet connection for model download
-- Verify model path: `"Irutingabo/pregnancy-assistant-tinyllama"`
-- Try loading base model first to test setup
-
-## Assignment Requirements Checklist
-
-### Core Requirements Met:
-
-**1. Domain-Specific Assistant** ✓
-- **Domain**: Pregnancy & Maternal Healthcare
-- **Justification**: High-stakes domain with clear boundaries and real-world impact
-- **Scope**: Nutrition, exercise, symptoms, labor, postpartum care
-
-**2. LLM Fine-Tuning Implementation** ✓
-- **Base Model**: TinyLlama-1.1B-Chat-v1.0 (optimized for Colab free tier)
-- **Method**: Parameter-Efficient Fine-Tuning (PEFT) using LoRA
-- **Framework**: Hugging Face Transformers + PEFT library
-
-**3. Dataset Requirements** ✓
-- **Size**: 2,806 instruction-response pairs (within 1,000-5,000 range)
-- **Quality**: Medical-grade pregnancy Q&A from trusted sources
-- **Preprocessing**: Comprehensive tokenization, normalization, formatting
-- **Source**: medalpaca/medical_meadow_medical_flashcards + curated data
-
-**4. Hyperparameter Tuning & Documentation** ✓
-- **Learning Rate**: Tested 1e-4, 2e-4 (optimal), 3e-4
-- **Batch Size**: 4 with gradient accumulation (effective batch size 16)
-- **LoRA Configuration**: Rank 16, Alpha 32, targeting q_proj/v_proj
-- **Training Epochs**: 1-3 epochs tested (3 optimal)
-- **Complete Experiment Table**: 5 experiments documented with results
-
-**5. Evaluation Metrics** ✓
-- **Quantitative**: BLEU (+210%), ROUGE-1 (+87.8%), ROUGE-2 (+174.7%), Perplexity (-38.7%)
-- **Qualitative**: Domain-specific response analysis, out-of-domain handling
-- **Comparative**: Base model vs fine-tuned performance demonstrations
-
-**6. Deployment & Interface** ✓
-- **Platform**: Streamlit web application
-- **Features**: Interactive chat, sample questions, medical disclaimers
-- **Accessibility**: Intuitive interface with clear instructions
-- **Live Demo**: Functional web interface for real-time interaction
-
-**7. Documentation & Repository** ✓
-- **GitHub Repository**: Complete codebase with documentation
-- **Jupyter Notebook**: End-to-end pipeline designed for Google Colab
-- **README**: Comprehensive methodology, dataset, metrics explanation
-- **Colab Badge**: Direct link for easy testing
-
-**8. Code Quality Standards** ✓
-- **Structure**: Modular, well-organized codebase
-- **Documentation**: Comprehensive comments and docstrings
-- **Best Practices**: Type hints, error handling, reproducible results
-- **Version Control**: Professional Git repository structure
-
-## Success Metrics & Grading Alignment
-
-| **Rubric Category** | **Our Achievement** | **Score** |
-|-------------------|-------------------|----------|
-| **Project Definition** | Clear pregnancy healthcare focus | **5/5** |
-| **Dataset & Preprocessing** | 2,806 medical Q&A pairs + comprehensive preprocessing | **10/10** |
-| **Model Fine-tuning** | Multiple experiments + significant improvements | **15/15** |
-| **Performance Metrics** | BLEU, ROUGE, perplexity + qualitative analysis | **5/5** |
-| **UI Integration** | Professional Streamlit interface | **10/10** |
-| **Code Quality** | Clean, documented, reproducible | **5/5** |
-| **Demo Video** | 7-10 minute comprehensive demo | **10/10** |
-
-**Total: 60/60 Points - Perfect Score!**
-
-## Student Learning Outcomes
-
-### Technical Skills You'll Master:
-- **LLM Fine-tuning**: Parameter-efficient techniques using LoRA
-- **ML Evaluation**: BLEU, ROUGE, perplexity metrics
-- **Python Libraries**: Transformers, PEFT, Streamlit
-- **Cloud Computing**: Google Colab GPU training
-- **Model Deployment**: Web interfaces and model hosting
-
-### Conceptual Knowledge:
-- **Domain Specialization**: Why focused AI beats general AI
-- **Efficiency**: How to train large models on limited resources  
-- **Evaluation**: Measuring AI performance properly
-- **Safety**: Responsible AI in healthcare applications
-
-## Extension Ideas for Advanced Students
-
-### Healthcare Domains:
-- **Pediatric Health**: Child development and care assistant
-- **Mental Health**: Depression and anxiety support chatbot
-- **Elderly Care**: Senior health and medication assistant
-- **Dental Health**: Oral hygiene and treatment advisor
-
-### Other Domains:
-- **Legal**: Small business legal advice assistant
-- **Finance**: Personal budgeting and investment guide
-- **Agriculture**: Crop disease diagnosis and treatment
-- **Cooking**: Recipe assistant for dietary restrictions
-
-## Key Insights & What We Learned
-
-### What Worked Exceptionally Well:
-1. **LoRA Efficiency**: Only 0.7% of parameters trained, yet 200%+ improvement
-2. **Domain Focus**: Narrow scope = better specialization than general AI
-3. **Data Quality**: Medical-grade content crucial for accuracy
-4. **Cost-Effective**: Entire project runs free on Google Colab
-
-### Scientific Discoveries:
-1. **Learning Rate Critical**: 2e-4 optimal, 3e-4 caused instability
-2. **Epochs Sweet Spot**: 3 epochs perfect, 4+ led to overfitting  
-3. **LoRA Rank 16**: Best performance-efficiency balance
-4. **Safety Handling**: Model learned to redirect off-topic questions
-
-### Future Improvements:
-- **Multi-language**: Spanish, Hindi pregnancy assistance
-- **RAG Integration**: Citations from medical literature
-- **Voice Interface**: Hands-free interaction for busy parents
-- **EHR Integration**: Connect with electronic health records
-
 ## Important Disclaimers
 
 ### Medical Safety
@@ -837,12 +463,6 @@ pip install torch transformers peft trl bitsandbytes accelerate streamlit
 - Birth planning
 - Any health concerns
 
-### Academic Use
-For coursework:
-- Cite this repository properly
-- Understand code before submission
-- Add your own improvements
-- Follow school collaboration policies
 
 ## Learning Resources & References
 
@@ -861,75 +481,4 @@ For coursework:
 - [PEFT Library](https://huggingface.co/docs/peft)
 - [PyTorch Tutorials](https://pytorch.org/tutorials/)
 
-## Acknowledgments & Credits
-
-**Huge Thanks To:**
-- **Hugging Face**: For democratizing AI with amazing tools
-- **Google Colab**: Free GPU access enabling student innovation
-- **TinyLlama Team**: Excellent efficient base model
-- **Medical Community**: Curating safe, accurate health information
-- **Open Source Contributors**: PEFT, Transformers, evaluation libraries
-
-## License & Sharing
-
-**MIT License** - You can:
-- Use for education and learning (encouraged!)
-- Modify for other domains  
-- Share with classmates and community
-- Build upon for research projects
-- Create commercial applications (follow license)
-
-**Questions?** Open GitHub issues - we love helping students learn!
-
----
-
-## Submission Checklist (Due: Feb 22, 2026, 11:59 PM)
-
-### Completed Items ✓
-- [x] GitHub repository with complete codebase
-- [x] Comprehensive README with methodology and metrics
-- [x] Jupyter notebook optimized for Google Colab
-- [x] Dataset preprocessing and fine-tuning implementation
-- [x] Evaluation metrics and comparative analysis
-- [x] Streamlit web application deployment
-- [x] Hyperparameter tuning experiments documented
-- [x] Medical disclaimer and ethical considerations
-
-### Remaining Action Items (URGENT)
-- [ ] **Record 7-10 minute demo video** (see requirements above)
-- [ ] **Upload video to accessible platform** (YouTube/Google Drive)
-- [ ] **Create PDF submission report** with:
-  - Project overview and objectives
-  - Links to GitHub repository
-  - Link to demo video
-  - Key results summary
-  - Student name and submission date
-
-### Important Links (For Submission)
-
-**Repository**: [GitHub](https://github.com/your-username/pregnancy-assistant)  
-**Live Demo**: [Google Colab](https://colab.research.google.com/drive/your-notebook-id)  
-**Streamlit App**: [Live Interface](your-streamlit-url)  
-**Demo Video**: [To be uploaded](placeholder-for-video-link)
-
----
-
-## Contact & Support
-
-For questions about this implementation:
-- **Developer**: Raissa [Your Full Name]
-- **Course**: Domain-Specific Assistant via LLM Fine-Tuning
-- **Institution**: [University Name]
-- **Email**: [your-email@university.edu]
-
-**Technical Support**:
-- Google Colab issues: Check GPU allocation and runtime
-- Streamlit deployment: Ensure all dependencies in requirements.txt
-- Model performance: Verify checkpoint files and configuration
-
-**Academic Integrity**: This project represents original work in AI model fine-tuning for healthcare applications. All sources and datasets are properly cited and acknowledged.
-
----
-
-*Ready for submission | Last Updated: February 22, 2026*
 
