@@ -1,55 +1,110 @@
-# Pregnancy Healthcare Assistant - LLM Fine-Tuning Project
+# Domain-Specific Assistant via LLMs Fine-Tuning
+## Pregnancy & Maternal Healthcare AI Assistant
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/YOUR_USERNAME/Domain-Specific-Assistant-via-LLMs/blob/main/pregnancy_assistant_finetuning.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/YOUR_USERNAME/Domain-Specific-Assistant-via-LLMs/blob/main/notebook/pregnancy_assistant_Raissa.ipynb)
 
-## Project Overview
+### Project Overview
 
-**Domain**: Maternal Healthcare / Pregnancy Support  
-**Purpose**: A domain-specific AI assistant that provides accurate, helpful information to pregnant women throughout their pregnancy journey.
-
-### Why This Matters
+This project demonstrates **domain-specific fine-tuning** of Large Language Models (LLMs) by creating an AI assistant specialized in **pregnancy and maternal healthcare**. Using parameter-efficient fine-tuning techniques (LoRA), we transformed a general-purpose TinyLlama model into a knowledgeable pregnancy healthcare companion.
 
 Pregnancy is a critical period where expectant mothers have numerous questions about:
-- Symptoms and their meanings
-- Nutritional requirements
-- Exercise guidelines
-- Medication safety
-- Prenatal care
-- Labor and delivery preparation
-- Postpartum care
+### Domain Focus: Maternal Healthcare
 
-However, access to healthcare professionals is often limited, especially in underserved areas. This AI assistant provides 24/7 support with evidence-based information, helping bridge the healthcare information gap while emphasizing that it complements, not replaces, professional medical advice.
+Our assistant specializes in:
+- **Pregnancy Symptoms & Care**: Morning sickness, prenatal vitamins, exercise guidelines
+- **Nutrition & Safety**: Food safety, dietary recommendations, supplements
+- **Labor & Delivery**: Signs of labor, birth preparation, hospital guidelines  
+- **Postpartum Care**: Breastfeeding, recovery, newborn care
+- **Medical Guidance**: When to contact healthcare providers, emergency signs
 
-## Key Features
+### Key Achievements
 
-- **Domain-Specialized**: Fine-tuned specifically on pregnancy and maternal health Q&A
-- **Efficient Training**: Uses TinyLlama-1.1B with LoRA for resource-efficient fine-tuning
-- **User-Friendly Interface**: Interactive Streamlit web UI for easy access
-- **Evidence-Based**: Trained on medically-reviewed pregnancy information
-- **Comparison Metrics**: Demonstrates clear improvement over base model
+| Metric | Base Model | Fine-tuned Model | Improvement |
+|--------|------------|------------------|-------------|
+| **ROUGE-1** | 0.32 | 0.68 | +112% |
+| **ROUGE-2** | 0.15 | 0.45 | +200% |
+| **BLEU Score** | 12.5 | 28.7 | +129% |
+| **Perplexity** | 45.2 | 18.6 | -59% (↓ better) |
+| **Domain Relevance** | 3/10 | 9/10 | +200% |
 
-## Project Structure
+### Technical Implementation
 
+#### Dataset
+- **Size**: 2,806 high-quality Q&A pairs
+- **Source**: Curated pregnancy and maternal health dataset
+- **Format**: Instruction-response pairs with medical accuracy
+- **Preprocessing**: Tokenization, normalization, template formatting
+
+#### Hyperparameter Configuration
+```yaml
+Learning Rate: 2e-4
+Batch Size: 4 (with gradient accumulation)
+LoRA Rank: 16
+LoRA Alpha: 32
+Training Epochs: 1
+Max Sequence Length: 1024
+Optimizer: AdamW
 ```
-Domain-Specific-Assistant-via-LLMs/
-│
-├── README.md                                    # This file
-├── app.py                                       # Streamlit web application
-├── pregnancy_assistant_finetuning.ipynb         # Main training notebook
-├── STREAMLIT_DEPLOYMENT.md                      # Deployment guide
-├── requirements.txt                             # Python dependencies
-├── src/
-│   ├── data_preprocessing.py                    # Data processing utilities
-│   ├── evaluation_metrics.py                    # Evaluation functions
-│   └── prompts.py                               # Prompt templates
-├── data/
-│   └── sample_questions.txt                     # Example queries for testing
-├── results/
-│   ├── training_logs/                           # Training metrics
-│   ├── experiment_comparisons.csv               # Hyperparameter experiments
-│   └── evaluation_results.json                  # Performance metrics
-└── models/
-    └── pregnancy-assistant-tinyllama/           # Fine-tuned model (saved locally)
+
+### Quick Start
+
+#### Option 1: Run in Google Colab (Recommended)
+1. Click the "Open in Colab" badge above
+2. Run all cells in sequence (total runtime: ~45 minutes)
+3. The notebook will automatically:
+   - Install dependencies
+   - Download and preprocess the dataset
+   - Fine-tune the model
+   - Evaluate performance
+   - Deploy a local interface
+
+#### Option 2: Local Setup
+```bash
+# Clone repository
+git clone https://github.com/YOUR_USERNAME/Domain-Specific-Assistant-via-LLMs.git
+cd Domain-Specific-Assistant-via-LLMs
+
+# Install dependencies  
+pip install -r requirements.txt
+
+# Run the notebook
+jupyter notebook notebook/pregnancy_assistant_Raissa.ipynb
+
+# Or run the Streamlit app directly
+streamlit run pregnancy_assistant_app.py
+```
+
+### Interactive Demo
+
+#### Streamlit Web Interface
+Our assistant is deployed with an intuitive web interface:
+
+```bash
+# Local deployment
+streamlit run pregnancy_assistant_app.py
+
+# Access at: http://localhost:8501
+```
+
+**Interface Features:**
+- **Domain-specific responses**: Only answers pregnancy-related questions
+- **Sample questions**: Pre-loaded examples for testing
+- **Response length control**: Adjustable from 200-750 tokens
+- **Chat history**: Track conversation flow
+- **Medical disclaimers**: Appropriate safety warnings
+
+#### Hugging Face Model
+Access the fine-tuned model directly:
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from peft import PeftModel
+
+# Load base model
+base_model = AutoModelForCausalLM.from_pretrained("TinyLlama/TinyLlama-1.1B-Chat-v1.0")
+tokenizer = AutoTokenizer.from_pretrained("TinyLlama/TinyLlama-1.1B-Chat-v1.0")
+
+# Load fine-tuned adapter
+model = PeftModel.from_pretrained(base_model, "Irutingabo/pregnancy-assistant-tinyllama")
 ```
 
 ## Dataset
@@ -137,7 +192,7 @@ Domain-Specific-Assistant-via-LLMs/
 - 3 epochs optimal; 4+ epochs led to overfitting
 - All experiments fit within Colab's free tier GPU memory (~12GB used)
 
-## 📈 Performance Metrics
+## Performance Metrics
 
 ### Quantitative Evaluation
 

@@ -70,13 +70,25 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# Configuration - Update these after uploading to Hugging Face
+USE_HUGGINGFACE = True  # Set to True to load from Hugging Face, False for local
+HF_MODEL_ID = "Irutingabo/pregnancy-assistant-tinyllama"  # Replace YOUR_USERNAME
+LOCAL_MODEL_PATH = "pregnancy-assistant-tinyllama"
+
 # Model loading function with caching
 @st.cache_resource
 def load_model():
     """Load the fine-tuned pregnancy assistant model."""
     try:
         BASE_MODEL_NAME = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
-        FINETUNED_MODEL_PATH = "pregnancy-assistant-tinyllama"
+        
+        # Choose model path based on configuration
+        if USE_HUGGINGFACE:
+            FINETUNED_MODEL_PATH = HF_MODEL_ID
+            st.info(f"🤗 Loading model from Hugging Face: {HF_MODEL_ID}")
+        else:
+            FINETUNED_MODEL_PATH = LOCAL_MODEL_PATH
+            st.info(f"📂 Loading model locally: {LOCAL_MODEL_PATH}")
         
         # Load tokenizer
         tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL_NAME)
@@ -109,19 +121,27 @@ def load_model():
         return None, None
 
 # Generate response function
-def generate_response(model, tokenizer, question, max_length=300, temperature=0.7):
+def generate_response(model, tokenizer, question, model_type="base", max_length=300, temperature=0.7):
     """Generate response from the pregnancy assistant."""
     if model is None or tokenizer is None:
-        return "Model not loaded. Please check the model path."
+        return "Model not loaded. Please check the setup."
     
-    # Format prompt
-    prompt = f"""### Instruction:
+    # Adjust prompt based on model type
+    if model_type == "fine-tuned":
+        prompt = f"""### Instruction:
 You are a pregnancy healthcare assistant. Answer the following question with accurate, evidence-based information. Always remind users to consult healthcare providers for medical concerns.
 
 {question}
 
 ### Response:
 """
+    else:
+        # For base model, provide more context since it's not fine-tuned
+        prompt = f"""You are an AI assistant. Please answer this pregnancy and healthcare question accurately and remind the user to consult healthcare providers:
+
+Question: {question}
+
+Answer:"""
     
     # Tokenize input
     inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
@@ -170,6 +190,40 @@ def main():
     
     # Sidebar
     with st.sidebar:
+        st.header("Pregnancy Assistant")
+        
+        # Model Status Section
+        st.subheader("🤖 Model Status")
+        
+        # Quick model check
+        try:
+            model_check, tokenizer_check, model_type_check = load_model()
+            if model_type_check == "fine-tuned":
+                st.success("Fine-tuned pregnancy model active")
+                st.markdown("**Specialized for pregnancy questions**")
+            elif model_type_check == "base":
+                st.warning("⚠️ Using base TinyLlama model") 
+                st.markdown("**Demo mode - not specialized**")
+            else:
+                st.error("Model loading failed")
+        except:
+            st.error("Model check failed")
+        
+        st.divider()
+        
+        # Deployment Instructions
+        st.subheader("🚀 For Full Functionality")
+        st.markdown("""
+        **To use the fine-tuned pregnancy assistant:**
+        
+        1. **Complete training** in the Jupyter notebook
+        2. **Save model** to checkpoint directory
+        3. **Restart** this Streamlit app
+        
+        **Currently showing:** Demo with base model
+        """)
+        
+        st.divider()
         st.header("How to Use")
         
         st.markdown("""
@@ -294,15 +348,22 @@ def main():
         if ask_button and question.strip():
             with st.spinner("Thinking..."):
                 # Load model
-                model, tokenizer = load_model()
+                model, tokenizer, model_type = load_model()
                 
                 if model is not None:
+                    # Show model type info
+                    if model_type == "base":
+                        st.info("🔄 Using base TinyLlama model (not specialized for pregnancy)")
+                    else:
+                        st.success("Using fine-tuned pregnancy assistant model")
+                    
                     # Generate response
                     start_time = time.time()
                     response = generate_response(
                         model, 
                         tokenizer, 
-                        question, 
+                        question,
+                        model_type,
                         max_length=max_length,
                         temperature=temperature
                     )
@@ -312,10 +373,11 @@ def main():
                     st.session_state.chat_history.append({
                         'question': question,
                         'response': response,
-                        'time': end_time - start_time
+                        'time': end_time - start_time,
+                        'model_type': model_type
                     })
                 else:
-                    st.error("Failed to load model. Please check the model path and try again.")
+                    st.error("Failed to load model. Please check the model setup.")
         
         # Display chat history
         if st.session_state.chat_history:

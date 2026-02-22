@@ -84,6 +84,23 @@ with st.sidebar:
     st.metric("Trainable Parameters", "4.5M (0.41%)")
     st.metric("Training Method", "LoRA Fine-tuning")
     
+    st.header("Response Settings")
+    response_length = st.selectbox(
+        "Response Length",
+        options=["Short (200 tokens)", "Medium (350 tokens)", "Long (500 tokens)", "Very Long (750 tokens)"],
+        index=2,  # Default to "Long"
+        help="Longer responses provide more detailed information but take more time to generate"
+    )
+    
+    # Convert selection to token count
+    length_mapping = {
+        "Short (200 tokens)": 200,
+        "Medium (350 tokens)": 350, 
+        "Long (500 tokens)": 500,
+        "Very Long (750 tokens)": 750
+    }
+    max_response_tokens = length_mapping[response_length]
+    
     st.header("Important Disclaimer")
     st.warning("""
     This AI assistant provides general information only and should NOT replace 
@@ -91,18 +108,30 @@ with st.sidebar:
     healthcare providers for medical concerns.
     """)
 
+# Configuration - Update these after uploading to Hugging Face  
+USE_HUGGINGFACE = False  # Set to True to load from Hugging Face, False for local
+HF_MODEL_ID = "Irutingabo/pregnancy-assistant-tinyllama"  # Replace YOUR_USERNAME
+LOCAL_MODEL_PATH = "./data/pregnancy-assistant-tinyllama/checkpoint-50"
+
 # Model loading with caching
 @st.cache_resource
 def load_model():
     """Load the fine-tuned pregnancy assistant model with caching"""
     MODEL_NAME = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
-    MODEL_PATH = "./data/pregnancy-assistant-tinyllama/checkpoint-50"
     
-    # Check if model exists
-    if not os.path.exists(MODEL_PATH):
-        st.error(f"Fine-tuned model not found at {MODEL_PATH}")
-        st.info("Please ensure you've completed the training process first.")
-        return None, None
+    # Choose model path based on configuration
+    if USE_HUGGINGFACE:
+        MODEL_PATH = HF_MODEL_ID
+        st.info(f"Loading model from Hugging Face: {HF_MODEL_ID}")
+        # For HF models, no local file check needed
+    else:
+        MODEL_PATH = LOCAL_MODEL_PATH
+        st.info(f"Loading model locally: {LOCAL_MODEL_PATH}")
+        # Check if local model exists
+        if not os.path.exists(MODEL_PATH):
+            st.error(f"Fine-tuned model not found at {MODEL_PATH}")
+            st.info("Please ensure you've completed the training process first.")
+            return None, None
     
     try:
         # Load tokenizer
@@ -119,16 +148,27 @@ def load_model():
         )
         
         # Load fine-tuned adapter
+        st.info("Loading PEFT adapter...")
         model = PeftModel.from_pretrained(
             base_model, 
             MODEL_PATH,
             device_map=None
         )
         
+        st.success(f"Model loaded successfully from {'Hugging Face' if USE_HUGGINGFACE else 'local files'}!")
         return model, tokenizer
         
     except Exception as e:
         st.error(f"Error loading model: {str(e)}")
+        if USE_HUGGINGFACE:
+            st.info("**Troubleshooting tips for Hugging Face loading:**")
+            st.info("- The model might need a few minutes after upload to be fully available")
+            st.info("- Check if the model repository exists at: https://huggingface.co/Irutingabo/pregnancy-assistant-tinyllama")
+            st.info("- Try switching to local loading temporarily by setting USE_HUGGINGFACE = False")
+        else:
+            st.info("**Troubleshooting tips for local loading:**") 
+            st.info("- Ensure the training process completed successfully")
+            st.info("- Check that model files exist in the expected directory")
         return None, None
 
 def is_pregnancy_related(question: str) -> bool:
@@ -146,7 +186,7 @@ def is_pregnancy_related(question: str) -> bool:
     question_lower = question.lower()
     return any(keyword in question_lower for keyword in pregnancy_keywords)
 
-def generate_response(model, tokenizer, question: str) -> str:
+def generate_response(model, tokenizer, question: str, max_tokens: int = 500) -> str:
     """Generate response from the fine-tuned model with domain filtering"""
     if model is None or tokenizer is None:
         return "Model not available. Please check the model loading status."
@@ -174,14 +214,14 @@ You are a specialized pregnancy healthcare assistant. Answer the following pregn
 """
     
     try:
-        # Tokenize input
-        inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=512)
+        # Tokenize input with increased limits
+        inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=1024)
         
-        # Generate response
+        # Generate response with configurable length
         with torch.no_grad():
             outputs = model.generate(
                 **inputs,
-                max_new_tokens=200,
+                max_new_tokens=max_tokens,  # Use configurable response length
                 temperature=0.7,
                 top_p=0.9,
                 do_sample=True,
@@ -241,7 +281,7 @@ if st.session_state.model_loaded:
     st.divider()
     
     # Demo section for domain filtering
-    with st.expander("🎯 Test Domain-Specific Filtering (Try Non-Pregnancy Questions)"):
+    with st.expander("Test Domain-Specific Filtering (Try Non-Pregnancy Questions)"):
         st.write("**Demonstrate that this assistant only responds to pregnancy-related questions:**")
         demo_questions = [
             "How do I know if I have COVID?",
@@ -294,7 +334,8 @@ if st.session_state.model_loaded:
             response = generate_response(
                 st.session_state.model, 
                 st.session_state.tokenizer, 
-                user_question
+                user_question,
+                max_tokens=max_response_tokens  # Use configurable response length
             )
             
             # Add to chat history
